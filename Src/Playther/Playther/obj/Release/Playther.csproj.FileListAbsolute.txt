@@ -1,0 +1,14 @@
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\bin\Release\Playther.exe.config
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\bin\Release\Playther.exe
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\bin\Release\Playther.pdb
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\bin\Release\Microsoft.Web.WebView2.Core.xml
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\bin\Release\Microsoft.Web.WebView2.WinForms.xml
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.csproj.SuggestedBindingRedirects.cache
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.Form1.resources
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.Properties.Resources.resources
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.csproj.GenerateResource.cache
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.csproj.CopyComplete
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.exe
+C:\Users\micha\Documents\github\Playther\Src\Playther\Playther\obj\Release\Playther.pdb
