@@ -7,6 +7,7 @@ using System.Text;
 using System.Drawing;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Playther
 {
@@ -52,6 +53,10 @@ namespace Playther
             webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView21.Dock = DockStyle.Fill;
             this.Controls.Add(webView21);
+            using (System.IO.StreamWriter createdfile = new System.IO.StreamWriter(Application.StartupPath + @"\temphandle"))
+            {
+                createdfile.WriteLine(Process.GetCurrentProcess().MainWindowHandle);
+            }
         }
         private void TrayMenuContext()
         {
@@ -64,10 +69,14 @@ namespace Playther
         }
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
-            IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
-            ShowWindow(handle, 9);
-            SetForegroundWindow(handle);
-            Microsoft.VisualBasic.Interaction.AppActivate("Playther");
+            if (File.Exists(Application.StartupPath + @"\temphandle"))
+                using (System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\temphandle"))
+                {
+                    IntPtr handle = new IntPtr(int.Parse(file.ReadLine()));
+                    ShowWindow(handle, 9);
+                    SetForegroundWindow(handle);
+                    Microsoft.VisualBasic.Interaction.AppActivate("Playther");
+                }
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
