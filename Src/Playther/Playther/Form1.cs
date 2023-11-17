@@ -16,6 +16,10 @@ namespace Playther
         {
             InitializeComponent();
         }
+        [DllImport("user32.dll")]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
         [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
         public static extern uint TimeBeginPeriod(uint ms);
         [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
@@ -57,6 +61,13 @@ namespace Playther
         void MenuTest1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+        private void notifyIcon1_DoubleClick(object sender, EventArgs e)
+        {
+            IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
+            ShowWindow(handle, 9);
+            SetForegroundWindow(handle);
+            Microsoft.VisualBasic.Interaction.AppActivate("Playther");
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
