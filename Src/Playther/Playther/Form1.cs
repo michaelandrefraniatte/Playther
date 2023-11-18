@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
+using System.Threading;
 
 namespace Playther
 {
@@ -82,9 +83,8 @@ namespace Playther
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
-            string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
-            webView21.Source = new System.Uri(filepath);
-            webView21.DefaultBackgroundColor = Color.Transparent;
+            webView21.BackColor = Color.Black;
+            webView21.DefaultBackgroundColor= Color.Black;
             webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView21.Dock = DockStyle.Fill;
             webView21.NavigationCompleted += WebView21_NavigationCompleted;
@@ -93,13 +93,15 @@ namespace Playther
             {
                 createdfile.WriteLine(Process.GetCurrentProcess().MainWindowHandle);
             }
+            string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
+            webView21.Source = new System.Uri(filepath);
         }
         private void Loader()
         {
             while (this.progressBar1.Value <= 100)
             {
                 this.progressBar1.Value++;
-                System.Threading.Thread.Sleep(25);
+                System.Threading.Thread.Sleep(30);
             }
         }
         private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
@@ -127,8 +129,6 @@ namespace Playther
         void MenuTest1_Click(object sender, EventArgs e)
         {
             this.Close();
-            keyboardHook.Hook -= new KeyboardHook.KeyboardHookCallback(KeyboardHook_Hook);
-            keyboardHook.Uninstall();
         }
         private void notifyIcon1_DoubleClick(object sender, EventArgs e)
         {
@@ -143,7 +143,35 @@ namespace Playther
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            keyboardHook.Hook -= new KeyboardHook.KeyboardHookCallback(KeyboardHook_Hook);
+            keyboardHook.Uninstall();
+            webView21.CoreWebView2.CookieManager.DeleteAllCookies();
             webView21.Dispose();
+            Thread.Sleep(1000);
+            string root = Application.StartupPath + @"\Playther.exe.WebView2";
+            if (Directory.Exists(root))
+            {
+                DeleteDirectory(root);
+            }
+        }
+        public static void DeleteDirectory(string path)
+        {
+            foreach (string directory in Directory.GetDirectories(path))
+            {
+                DeleteDirectory(directory);
+            }
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (IOException)
+            {
+                Directory.Delete(path, true);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Directory.Delete(path, true);
+            }
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
