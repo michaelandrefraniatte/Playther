@@ -1,2 +1,0 @@
-// Weather type to load
-1

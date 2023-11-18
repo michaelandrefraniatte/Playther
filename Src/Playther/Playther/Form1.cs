@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml.Linq;
 
 namespace Playther
 {
@@ -32,7 +33,6 @@ namespace Playther
         private static int height = Screen.PrimaryScreen.Bounds.Height;
         public WebView2 webView21 = new WebView2();
         private static int x, y, cx, cy;
-        private static string weathertype = "";
         private static bool switchbool = false;
         public KeyboardHook keyboardHook = new KeyboardHook();
         public static int vkCode, scanCode;
@@ -65,20 +65,8 @@ namespace Playther
             TrayMenuContext();
             keyboardHook.Hook += new KeyboardHook.KeyboardHookCallback(KeyboardHook_Hook);
             keyboardHook.Install();
-            using (StreamReader file = new StreamReader("params.txt"))
-            {
-                file.ReadLine();
-                weathertype = file.ReadLine();
-            }
             this.ShowInTaskbar = false;
-            if (weathertype == "1")
-            {
-                this.Size = new Size(400, 240);
-            }
-            else
-            {
-                this.Size = new Size(400, 240);
-            }
+            this.Size = new Size(400, 240);
             cx = this.Size.Width;
             cy = this.Size.Height;
             x = width - cx;
@@ -88,20 +76,17 @@ namespace Playther
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
-            if (weathertype == "1")
-            {
-                string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index1.html";
-                webView21.Source = new System.Uri(filepath);
-            }
-            else
-            {
-                string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index2.html";
-                webView21.Source = new System.Uri(filepath);
-            }
+            string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
+            webView21.Source = new System.Uri(filepath);
             webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView21.Dock = DockStyle.Fill;
             this.Controls.Add(webView21);
+            string stringinject = @"
+                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
+                            document.getElementById('weatherwidget').style.display = 'block';
+                    ".Replace("\r\n", " ");
+            execScriptHelper(stringinject);
             using (System.IO.StreamWriter createdfile = new System.IO.StreamWriter(Application.StartupPath + @"\temphandle"))
             {
                 createdfile.WriteLine(Process.GetCurrentProcess().MainWindowHandle);
@@ -141,33 +126,28 @@ namespace Playther
             {
                 if (!switchbool)
                 {
-                    if (weathertype == "1")
-                    {
-                        string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index2.html";
-                        webView21.Source = new System.Uri(filepath);
-                    }
-                    else
-                    {
-                        string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index1.html";
-                        webView21.Source = new System.Uri(filepath);
-                    }
+                    string stringinject = @"
+                            document.getElementById('weatherwidget').style.display = 'none';
+                            document.getElementById('ww_22794f4fd0e49').style.display = 'block';
+                    ".Replace("\r\n", " ");
+                    execScriptHelper(stringinject);
                     switchbool = true;
                 }
                 else
                 {
-                    if (weathertype == "1")
-                    {
-                        string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index1.html";
-                        webView21.Source = new System.Uri(filepath);
-                    }
-                    else
-                    {
-                        string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index2.html";
-                        webView21.Source = new System.Uri(filepath);
-                    }
+                    string stringinject = @"
+                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
+                            document.getElementById('weatherwidget').style.display = 'block';
+                    ".Replace("\r\n", " ");
+                    execScriptHelper(stringinject);
                     switchbool = false;
                 }
             }
+        }
+        private async Task<String> execScriptHelper(String script)
+        {
+            var x = await webView21.ExecuteScriptAsync(script).ConfigureAwait(false);
+            return x;
         }
         private async void KeyboardHook_Hook(KeyboardHook.KBDLLHOOKSTRUCT keyboardStruct) { }
         public const int VK_LBUTTON = (int)0x01;
