@@ -107,16 +107,16 @@ namespace Playther
             if (starting)
             {
                 starting = false;
-                string stringinject = @"
-                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
-                            document.getElementById('weatherwidget').style.display = 'block';
-                    ".Replace("\r\n", " ");
-                execScriptHelper(stringinject);
                 this.Controls.Remove(progressBar1);
                 this.Controls.Remove(label1);
                 this.Controls.Remove(label2);
                 this.Controls.Remove(label3);
                 this.Controls.Remove(pictureBox1);
+                string stringinject = @"
+                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
+                            document.getElementById('weatherwidget').style.display = 'block';
+                    ".Replace("\r\n", " ");
+                execScriptHelper(stringinject);
             }
         }
         private void TrayMenuContext()
@@ -155,7 +155,7 @@ namespace Playther
                 {
                     string stringinject = @"
                             document.getElementById('weatherwidget').style.display = 'none';
-                            document.getElementById('ww_22794f4fd0e49').style.display = 'block';
+                            document.getElementById('ww_22794f4fd0e49').style.display = '';
                     ".Replace("\r\n", " ");
                     execScriptHelper(stringinject);
                     switchbool = true;
