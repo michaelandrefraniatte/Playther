@@ -34,6 +34,7 @@ namespace Playther
         public WebView2 webView21 = new WebView2();
         private static int x, y, cx, cy;
         private static bool switchbool = false;
+        public static bool starting = true;
         public KeyboardHook keyboardHook = new KeyboardHook();
         public static int vkCode, scanCode;
         public static bool KeyboardHookButtonDown, KeyboardHookButtonUp;
@@ -72,6 +73,11 @@ namespace Playther
             x = width - cx;
             y = 0;
             this.Location = new Point(x, y);
+            this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
+            this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
+            this.pictureBox1.Location = new Point(cx / 2 - this.pictureBox1.Size.Width / 2, cy * 1 / 8);
+            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 3 / 4);
+            Task.Run(() => Loader());
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security", "--autoplay-policy=no-user-gesture-required");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -81,15 +87,36 @@ namespace Playther
             webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
             webView21.Dock = DockStyle.Fill;
+            webView21.NavigationCompleted += WebView21_NavigationCompleted;
             this.Controls.Add(webView21);
-            string stringinject = @"
-                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
-                            document.getElementById('weatherwidget').style.display = 'block';
-                    ".Replace("\r\n", " ");
-            execScriptHelper(stringinject);
             using (System.IO.StreamWriter createdfile = new System.IO.StreamWriter(Application.StartupPath + @"\temphandle"))
             {
                 createdfile.WriteLine(Process.GetCurrentProcess().MainWindowHandle);
+            }
+        }
+        private void Loader()
+        {
+            while (this.progressBar1.Value <= 100)
+            {
+                this.progressBar1.Value++;
+                System.Threading.Thread.Sleep(25);
+            }
+        }
+        private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (starting)
+            {
+                starting = false;
+                string stringinject = @"
+                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
+                            document.getElementById('weatherwidget').style.display = 'block';
+                    ".Replace("\r\n", " ");
+                execScriptHelper(stringinject);
+                this.Controls.Remove(progressBar1);
+                this.Controls.Remove(label1);
+                this.Controls.Remove(label2);
+                this.Controls.Remove(label3);
+                this.Controls.Remove(pictureBox1);
             }
         }
         private void TrayMenuContext()
