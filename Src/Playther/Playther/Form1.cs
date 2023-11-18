@@ -68,24 +68,20 @@ namespace Playther
             keyboardHook.Hook += new KeyboardHook.KeyboardHookCallback(KeyboardHook_Hook);
             keyboardHook.Install();
             this.ShowInTaskbar = false;
-            this.Size = new Size(400, 240);
             cx = this.Size.Width;
             cy = this.Size.Height;
             x = width - cx;
             y = 0;
             this.Location = new Point(x, y);
-            this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
-            this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
-            this.pictureBox1.Location = new Point(cx / 2 - this.pictureBox1.Size.Width / 2, cy * 1 / 8);
-            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 3 / 4);
-            Task.Run(() => Loader());
-            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security", "--autoplay-policy=no-user-gesture-required");
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
-            webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
-            webView21.BackColor = Color.Black;
-            webView21.DefaultBackgroundColor= Color.Black;
+            webView21.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
+            webView21.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+            webView21.CoreWebView2.Settings.AreDevToolsEnabled = true;
             webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
+            webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.Dock = DockStyle.Fill;
             webView21.NavigationCompleted += WebView21_NavigationCompleted;
             this.Controls.Add(webView21);
@@ -96,30 +92,26 @@ namespace Playther
             string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
             webView21.Source = new System.Uri(filepath);
         }
-        private void Loader()
-        {
-            while (this.progressBar1.Value <= 100)
-            {
-                this.progressBar1.Value++;
-                System.Threading.Thread.Sleep(30);
-            }
-        }
         private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             if (starting)
             {
                 starting = false;
-                this.Controls.Remove(progressBar1);
-                this.Controls.Remove(label1);
-                this.Controls.Remove(label2);
-                this.Controls.Remove(label3);
-                this.Controls.Remove(pictureBox1);
                 string stringinject = @"
-                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
-                            document.getElementById('weatherwidget').style.display = 'block';
+                            document.getElementById('ww_9cb1939bcb193').style.display = 'none';
+                            document.getElementById('ww_13b7f5a71e4').style.display = '';
                     ".Replace("\r\n", " ");
                 execScriptHelper(stringinject);
             }
+        }
+        private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
+        {
+            CoreWebView2HttpRequestHeaders requestHeaders = e.Request.Headers;
+            requestHeaders.SetHeader("Access-Control-Max-Age", "0");
+            requestHeaders.SetHeader("Cache-Control", "max-age=0, public");
+            requestHeaders.SetHeader("Access-Control-Allow-Origin", "*");
+            requestHeaders.SetHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+            requestHeaders.SetHeader("Access-Control-Allow-Headers", "x-requested-with, content-type");
         }
         private void TrayMenuContext()
         {
@@ -182,8 +174,8 @@ namespace Playther
                 if (!switchbool)
                 {
                     string stringinject = @"
-                            document.getElementById('weatherwidget').style.display = 'none';
-                            document.getElementById('ww_22794f4fd0e49').style.display = '';
+                            document.getElementById('ww_13b7f5a71e4').style.display = 'none';
+                            document.getElementById('ww_9cb1939bcb193').style.display = '';
                     ".Replace("\r\n", " ");
                     execScriptHelper(stringinject);
                     switchbool = true;
@@ -191,8 +183,8 @@ namespace Playther
                 else
                 {
                     string stringinject = @"
-                            document.getElementById('ww_22794f4fd0e49').style.display = 'none';
-                            document.getElementById('weatherwidget').style.display = 'block';
+                            document.getElementById('ww_9cb1939bcb193').style.display = 'none';
+                            document.getElementById('ww_13b7f5a71e4').style.display = '';
                     ".Replace("\r\n", " ");
                     execScriptHelper(stringinject);
                     switchbool = false;
