@@ -34,8 +34,6 @@ namespace Playther
         private static int height = Screen.PrimaryScreen.Bounds.Height;
         public WebView2 webView21 = new WebView2();
         private static int x, y, cx, cy;
-        private static bool switchbool = false;
-        public static bool starting = true;
         public KeyboardHook keyboardHook = new KeyboardHook();
         public static int vkCode, scanCode;
         public static bool KeyboardHookButtonDown, KeyboardHookButtonUp;
@@ -83,7 +81,6 @@ namespace Playther
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
             webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.Dock = DockStyle.Fill;
-            webView21.NavigationCompleted += WebView21_NavigationCompleted;
             this.Controls.Add(webView21);
             using (System.IO.StreamWriter createdfile = new System.IO.StreamWriter(Application.StartupPath + @"\temphandle"))
             {
@@ -91,18 +88,6 @@ namespace Playther
             }
             string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
             webView21.Source = new System.Uri(filepath);
-        }
-        private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            if (starting)
-            {
-                starting = false;
-                string stringinject = @"
-                            document.getElementById('ww_9cb1939bcb193').style.display = 'none';
-                            document.getElementById('ww_13b7f5a71e4').style.display = '';
-                    ".Replace("\r\n", " ");
-                execScriptHelper(stringinject);
-            }
         }
         private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
         {
@@ -165,30 +150,16 @@ namespace Playther
                 Directory.Delete(path, true);
             }
         }
-        private void timer1_Tick(object sender, EventArgs e)
+        private async void timer1_Tick(object sender, EventArgs e)
         {
             KeyboardHookProcessButtons();
             valchanged(0, Key_ADD);
             if (wd[0] == 1)
             {
-                if (!switchbool)
-                {
-                    string stringinject = @"
-                            document.getElementById('ww_13b7f5a71e4').style.display = 'none';
-                            document.getElementById('ww_9cb1939bcb193').style.display = '';
+                string stringinject = @"
+                        window.location.reload(false);
                     ".Replace("\r\n", " ");
-                    execScriptHelper(stringinject);
-                    switchbool = true;
-                }
-                else
-                {
-                    string stringinject = @"
-                            document.getElementById('ww_9cb1939bcb193').style.display = 'none';
-                            document.getElementById('ww_13b7f5a71e4').style.display = '';
-                    ".Replace("\r\n", " ");
-                    execScriptHelper(stringinject);
-                    switchbool = false;
-                }
+                execScriptHelper(stringinject);
             }
         }
         private async Task<String> execScriptHelper(String script)
