@@ -32,6 +32,7 @@ namespace Playther
         public static uint CurrentResolution = 0;
         private static int width = Screen.PrimaryScreen.Bounds.Width;
         private static int height = Screen.PrimaryScreen.Bounds.Height;
+        public static bool starting = true;
         public WebView2 webView21 = new WebView2();
         private static int x, y, cx, cy;
         public KeyboardHook keyboardHook = new KeyboardHook();
@@ -66,11 +67,19 @@ namespace Playther
             keyboardHook.Hook += new KeyboardHook.KeyboardHookCallback(KeyboardHook_Hook);
             keyboardHook.Install();
             this.ShowInTaskbar = false;
+            this.pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             cx = this.Size.Width;
             cy = this.Size.Height;
             x = width - cx;
             y = 0;
+            this.Size = new Size(cx, cy);
             this.Location = new Point(x, y);
+            this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
+            this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
+            this.pictureBox1.Location = new Point(cx / 2 - this.pictureBox1.Size.Width / 2, cy * 1 / 10);
+            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 2 / 3);
+            this.Location = new Point(x, y);
+            Task.Run(() => Loader());
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -81,6 +90,7 @@ namespace Playther
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
             webView21.DefaultBackgroundColor = Color.Transparent;
             webView21.Dock = DockStyle.Fill;
+            webView21.NavigationCompleted += WebView21_NavigationCompleted;
             this.Controls.Add(webView21);
             using (System.IO.StreamWriter createdfile = new System.IO.StreamWriter(Application.StartupPath + @"\temphandle"))
             {
@@ -88,6 +98,45 @@ namespace Playther
             }
             string filepath = @"file:///" + System.Reflection.Assembly.GetEntryAssembly().Location.Replace("\\", "/").Replace("Playther.exe", "") + "assets/index.html";
             webView21.Source = new System.Uri(filepath);
+        }
+        private void Loader()
+        {
+            while (this.progressBar1.Value <= 100)
+            {
+                this.progressBar1.Value++;
+                System.Threading.Thread.Sleep(35);
+            }
+        }
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            if (starting)
+            {
+                this.label1.Location = new Point(this.Width / 2 - this.label1.Size.Width / 2, this.Height / 2 - this.label1.Height / 2 - this.label2.Height);
+                this.label2.Location = new Point(this.Width / 2 - this.label2.Size.Width / 2, this.Height / 2 - this.label2.Height / 2 + this.label2.Height);
+                this.pictureBox1.Location = new Point(this.Width / 2 - this.pictureBox1.Size.Width / 2, this.Height * 1 / 10);
+                this.progressBar1.Location = new Point(this.Width / 2 - this.progressBar1.Size.Width / 2, this.Height * 2 / 3);
+            }
+        }
+        private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (starting)
+            {
+                starting = false;
+                this.label3.BackColor = Color.Transparent;
+                this.Controls.Remove(this.label3);
+                this.label3.Dispose();
+                this.label2.BackColor = Color.Transparent;
+                this.Controls.Remove(this.label2);
+                this.label2.Dispose();
+                this.label1.BackColor = Color.Transparent;
+                this.Controls.Remove(this.label1);
+                this.label1.Dispose();
+                this.pictureBox1.BackColor = Color.Transparent;
+                this.Controls.Remove(this.pictureBox1);
+                this.pictureBox1.Dispose();
+                this.Controls.Remove(this.progressBar1);
+                this.progressBar1.Dispose();
+            }
         }
         private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
         {
