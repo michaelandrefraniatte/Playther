@@ -3,12 +3,10 @@ using System.Windows.Forms;
 using WebView2 = Microsoft.Web.WebView2.WinForms.WebView2;
 using Microsoft.Web.WebView2.Core;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Drawing;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.IO;
-using System.Xml.Linq;
 using System.Threading;
 
 namespace Playther
@@ -77,7 +75,7 @@ namespace Playther
             this.label1.Location = new Point(cx / 2 - this.label1.Size.Width / 2, cy / 2 - this.label1.Height / 2 - this.label2.Height);
             this.label2.Location = new Point(cx / 2 - this.label2.Size.Width / 2, cy / 2 - this.label2.Height / 2 + this.label2.Height);
             this.pictureBox1.Location = new Point(cx / 2 - this.pictureBox1.Size.Width / 2, cy * 1 / 10);
-            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 2 / 3);
+            this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 4 / 5);
             this.Location = new Point(x, y);
             Task.Run(() => Loader());
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security");
@@ -114,7 +112,7 @@ namespace Playther
                 this.label1.Location = new Point(this.Width / 2 - this.label1.Size.Width / 2, this.Height / 2 - this.label1.Height / 2 - this.label2.Height);
                 this.label2.Location = new Point(this.Width / 2 - this.label2.Size.Width / 2, this.Height / 2 - this.label2.Height / 2 + this.label2.Height);
                 this.pictureBox1.Location = new Point(this.Width / 2 - this.pictureBox1.Size.Width / 2, this.Height * 1 / 10);
-                this.progressBar1.Location = new Point(this.Width / 2 - this.progressBar1.Size.Width / 2, this.Height * 2 / 3);
+                this.progressBar1.Location = new Point(this.Width / 2 - this.progressBar1.Size.Width / 2, this.Height * 4 / 5);
             }
         }
         private void WebView21_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)

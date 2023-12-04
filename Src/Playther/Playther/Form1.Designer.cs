@@ -66,9 +66,9 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(94, 403);
+            this.progressBar1.Location = new System.Drawing.Point(94, 406);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(325, 32);
+            this.progressBar1.Size = new System.Drawing.Size(325, 29);
             this.progressBar1.TabIndex = 18;
             // 
             // label2
@@ -103,7 +103,7 @@
             this.label3.ForeColor = System.Drawing.Color.White;
             this.label3.Location = new System.Drawing.Point(0, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(534, 507);
+            this.label3.Size = new System.Drawing.Size(534, 485);
             this.label3.TabIndex = 17;
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -112,7 +112,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Magenta;
-            this.ClientSize = new System.Drawing.Size(534, 507);
+            this.ClientSize = new System.Drawing.Size(534, 485);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label2);
