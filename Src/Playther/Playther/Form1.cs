@@ -78,7 +78,7 @@ namespace Playther
             this.progressBar1.Location = new Point(cx / 2 - this.progressBar1.Size.Width / 2, cy * 4 / 5);
             this.Location = new Point(x, y);
             Task.Run(() => Loader());
-            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security");
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security", "en");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
             webView21.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
