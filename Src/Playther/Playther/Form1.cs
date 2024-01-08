@@ -202,26 +202,11 @@ namespace Playther
             string root = Application.StartupPath + @"\Playther.exe.WebView2";
             if (Directory.Exists(root))
             {
-                DeleteDirectory(root);
-            }
-        }
-        public static void DeleteDirectory(string path)
-        {
-            foreach (string directory in Directory.GetDirectories(path))
-            {
-                DeleteDirectory(directory);
-            }
-            try
-            {
-                Directory.Delete(path, true);
-            }
-            catch (IOException)
-            {
-                Directory.Delete(path, true);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Directory.Delete(path, true);
+                try
+                {
+                    Directory.Delete(root, true);
+                }
+                catch { }
             }
         }
         private async void timer1_Tick(object sender, EventArgs e)
