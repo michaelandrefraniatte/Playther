@@ -198,7 +198,21 @@ namespace Playther
             keyboardHook.Uninstall();
             webView21.CoreWebView2.CookieManager.DeleteAllCookies();
             webView21.Dispose();
-            Thread.Sleep(1000);
+        }
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DeleteCache();
+        }
+        [STAThread]
+        private void DeleteCache()
+        {
+            Thread newThread = new Thread(new ThreadStart(deleteCache));
+            newThread.SetApartmentState(ApartmentState.STA);
+            newThread.Start();
+        }
+        private void deleteCache()
+        {
+            Thread.Sleep(3000);
             string root = Application.StartupPath + @"\Playther.exe.WebView2";
             if (Directory.Exists(root))
             {
