@@ -235,6 +235,13 @@ namespace Playther
                 execScriptHelper(stringinject);
             }
         }
+        private async void timer2_Tick(object sender, EventArgs e)
+        {
+            string stringinject = @"
+                        window.location.reload(false);
+                    ".Replace("\r\n", " ");
+            execScriptHelper(stringinject);
+        }
         private async Task<String> execScriptHelper(String script)
         {
             var x = await webView21.ExecuteScriptAsync(script).ConfigureAwait(false);
